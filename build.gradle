@@ -1,21 +1,24 @@
 buildscript {
     repositories {
         maven { url = 'https://files.minecraftforge.net/maven' }
+        maven { url='https://dist.creeper.host/Sponge/maven' }
         jcenter()
         mavenCentral()
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7-SNAPSHOT'
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'org.spongepowered.mixin'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
 version = '1.0'
-group = 'com.yourname.modid' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = 'modid'
+group = 'pepjebs.thirdpersonmaps' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = 'third_person_maps'
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
@@ -36,6 +39,7 @@ minecraft {
     runs {
         client {
             workingDirectory project.file('run')
+            arg "-mixin.config=third_person_maps.mixin.json"
 
             // Recommended logging data for a userdev environment
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
@@ -44,7 +48,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             mods {
-                examplemod {
+                third_person_maps {
                     source sourceSets.main
                 }
             }
@@ -52,6 +56,7 @@ minecraft {
 
         server {
             workingDirectory project.file('run')
+            arg "-mixin.config=third_person_maps.mixin.json"
 
             // Recommended logging data for a userdev environment
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
@@ -60,7 +65,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             mods {
-                examplemod {
+                third_person_maps {
                     source sourceSets.main
                 }
             }
@@ -68,6 +73,7 @@ minecraft {
 
         data {
             workingDirectory project.file('run')
+            arg "-mixin.config=third_person_maps.mixin.json"
 
             // Recommended logging data for a userdev environment
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
@@ -76,10 +82,10 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
-            args '--mod', 'examplemod', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            args '--mod', 'third_person_maps', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 
             mods {
-                examplemod {
+                third_person_maps {
                     source sourceSets.main
                 }
             }
@@ -116,16 +122,20 @@ dependencies {
 
 }
 
+mixin {
+    add sourceSets.main, "third_person_maps.refmap.json"
+}
+
 // Example for how to get properties into the manifest for reading by the runtime..
 jar {
     manifest {
         attributes([
-            "Specification-Title": "examplemod",
-            "Specification-Vendor": "examplemodsareus",
+            "Specification-Title": "third_person_maps",
+            "Specification-Vendor": "Pepperoni__Jabroni__",
             "Specification-Version": "1", // We are version 1 of ourselves
             "Implementation-Title": project.name,
             "Implementation-Version": "${version}",
-            "Implementation-Vendor" :"examplemodsareus",
+            "Implementation-Vendor" :"Pepperoni__Jabroni__",
             "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
